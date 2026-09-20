@@ -26,7 +26,7 @@ class User extends Authenticatable implements CanResetPassword
 
     public function isAdmin(): bool
     {
-        return $this->hasRole('admin');
+        return $this->hasRole('admin', 'superadmin');
     }
 
     /**
