@@ -9,6 +9,7 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -18,6 +19,16 @@ class User extends Authenticatable implements CanResetPassword
 {
     /** @use HasFactory<UserFactory> */
     use CanResetPasswordTrait, HasFactory, Notifiable;
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class);
+    }
+
+    public function invitationTemplates(): HasMany
+    {
+        return $this->hasMany(InvitationTemplate::class);
+    }
 
     public function hasRole(string ...$roles): bool
     {

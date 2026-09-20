@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{{ asset('css/settings.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layout-colors.css') }}">
     <link rel="stylesheet" href="{{ asset('css/audit.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/invitations.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('css/datatables.css') }}">
     <style>:root{--brand-color:{{ $appSettings['primary_color'] ?? '#6c63ff' }};--sidebar-color:{{ $appSettings['sidebar_color'] ?? '#1f2440' }};--navbar-color:{{ $appSettings['navbar_color'] ?? '#ffffff' }};--footer-color:{{ $appSettings['footer_color'] ?? '#ffffff' }};--brand-color-rgb:108,99,255}.avatar img{width:100%;height:100%;object-fit:cover}.profile-avatar{width:104px;height:104px;border-radius:50%;overflow:hidden;background:#ddd9ff;color:#5a50d8;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800}.profile-avatar img{width:100%;height:100%;object-fit:cover}.brand-mark,.btn-primary{background-color:var(--brand-color)!important;border-color:var(--brand-color)!important}.text-primary{color:var(--brand-color)!important}.sidebar-menu .nav-link.active{background:var(--brand-color)!important}.profile-tabs .nav-link.active{background:var(--brand-color)!important}.app-sidebar{background:var(--sidebar-color)!important}.app-header{background-color:var(--navbar-color)!important}.app-footer{background-color:var(--footer-color)!important}</style>
@@ -46,8 +47,12 @@
             <div class="nav-header">MENU UTAMA</div>
             <ul class="nav sidebar-menu flex-column" role="menu">
                 <li class="nav-item"><a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="nav-icon fas fa-chart-pie"></i><p>Dashboard</p></a></li>
+                <li class="nav-item"><a href="{{ route('invitations.index') }}" class="nav-link {{ request()->routeIs('invitations.*') ? 'active' : '' }}"><i class="nav-icon fas fa-envelope-open-text"></i><p>Undangan Saya</p></a></li>
                 @if (auth()->user()->isAdmin())
                     <li class="nav-item"><a href="{{ route('admin.users') }}" class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}"><i class="nav-icon fas fa-users-cog"></i><p>Manajemen Pengguna</p></a></li>
+                @endif
+                @if (auth()->user()->hasRole('superadmin'))
+                    <li class="nav-item"><a href="{{ route('admin.templates.index') }}" class="nav-link {{ request()->routeIs('admin.templates*') ? 'active' : '' }}"><i class="nav-icon fas fa-palette"></i><p>Template Undangan</p></a></li>
                 @endif
             </ul>
             <div class="nav-header mt-3">AKUN SAYA</div>

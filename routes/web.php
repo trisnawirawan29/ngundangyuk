@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AdminTemplateController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PublicInvitationController;
 use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,9 +25,16 @@ Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name(
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+Route::get('/undangan/{slug}', [PublicInvitationController::class, 'show'])->name('invitations.public');
+Route::post('/undangan/{slug}/rsvp', [PublicInvitationController::class, 'storeRsvp'])->name('invitations.rsvp.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/invitations/templates/{template}/preview', [InvitationController::class, 'templatePreview'])->name('invitations.templates.preview');
+    Route::resource('invitations', InvitationController::class)->except(['show']);
+    Route::get('/invitations/{invitation}/preview', [InvitationController::class, 'preview'])->name('invitations.preview');
+    Route::get('/invitations/{invitation}/rsvps', [InvitationController::class, 'rsvps'])->name('invitations.rsvps');
+    Route::patch('/invitations/{invitation}/publish', [InvitationController::class, 'togglePublish'])->name('invitations.publish');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
     Route::patch('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
@@ -48,5 +58,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings');
         Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
         Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs');
+        Route::middleware('role:superadmin')->group(function () {
+            Route::resource('templates', AdminTemplateController::class)->except(['show']);
+            Route::get('/templates/{template}/preview', [AdminTemplateController::class, 'preview'])->name('templates.preview');
+        });
     });
 });
